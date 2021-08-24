@@ -1,0 +1,22 @@
+{
+  "name": "sopt-recruiting",
+  "version": "1.0.0",
+  "scripts": {
+    "prepare": "cd src/functions && npm install",
+    "postprepare": "cd ../..",
+    "dev": "cross-env NODE_ENV=development firebase serve --only",
+    "deploy": "cross-env NODE_ENV=production firebase deploy --only"
+  },
+  "dependencies": {
+    "cross-env": "^7.0.3"
+  },
+  "devDependencies": {
+    "eslint": "^7.28.0",
+    "eslint-config-prettier": "^8.3.0",
+    "nodemon": "^2.0.7",
+    "prettier": "^2.3.1"
+  },
+  "keywords": [
+    "Node.js"
+  ]
+}
