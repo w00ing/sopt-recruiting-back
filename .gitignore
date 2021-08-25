@@ -19,7 +19,6 @@ amplifytools.xcconfig
 .secret-*
 
 
-pairy-web-aws.pem
 .env
 **/node_modules/**
 .next
@@ -171,6 +170,6 @@ deployMessageToSlack.sh
 ### Firebase Patch ###
 .runtimeconfig.json
 .firebase/
-**/pairy-prod-44deb91419ba.json
+**/sopt-recruiting-f0488e2aa742.json
 
 # End of https://www.toptal.com/developers/gitignore/api/firebase

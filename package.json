@@ -4,10 +4,11 @@
   "scripts": {
     "prepare": "cd src/functions && npm install",
     "postprepare": "cd ../..",
-    "dev": "cross-env NODE_ENV=development firebase serve --only",
-    "deploy": "cross-env NODE_ENV=production firebase deploy --only"
+    "dev": "cross-env NODE_ENV=development firebase serve --only functions:api --port=9000",
+    "deploy": "cross-env NODE_ENV=production firebase deploy --only functions:api"
   },
   "dependencies": {
+    "@notionhq/client": "^0.3.0",
     "cross-env": "^7.0.3"
   },
   "devDependencies": {
