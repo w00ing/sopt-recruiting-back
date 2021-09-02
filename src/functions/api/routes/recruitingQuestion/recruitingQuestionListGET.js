@@ -20,13 +20,45 @@ module.exports = async (req, res) => {
 
     const questions = await recruitingQuestionSQL.getRecruitingQuestionsBySeasonAndGroup(client, season, group);
 
-    const questionsGroupedByType = _(questions)
-      .groupBy((o) => o.recruitingQuestionTypeKr)
-      .map((questions, type) => ({ type, questions }));
+    const questionTypes = await recruitingQuestionSQL.getRecruitingQuestionTypes(client);
+
+    const commonQuestions = {
+      part: '공통',
+      questions: questions.filter((o) => o.recruitingQuestionType === 'common'),
+    };
+
+    const partQuestions = [
+      {
+        part: '기획',
+        questions: questions.filter((o) => o.recruitingQuestionType === 'plan'),
+      },
+      {
+        part: '디자인',
+        questions: questions.filter((o) => o.recruitingQuestionType === 'design'),
+      },
+      {
+        part: '서버',
+        questions: questions.filter((o) => o.recruitingQuestionType === 'server'),
+      },
+      {
+        part: '안드로이드',
+        questions: questions.filter((o) => o.recruitingQuestionType === 'android'),
+      },
+      {
+        part: 'iOS',
+        questions: questions.filter((o) => o.recruitingQuestionType === 'ios'),
+      },
+      {
+        part: '웹',
+        questions: questions.filter((o) => o.recruitingQuestionType === 'web'),
+      },
+    ];
 
     res.status(200).json({
       err: false,
-      questions: questionsGroupedByType,
+      commonQuestions,
+      partQuestions,
+      questionTypes,
     });
   } catch (error) {
     console.log(error);

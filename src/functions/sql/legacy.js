@@ -1,9 +1,9 @@
 const convertSnakeToCamel = require('../lib/convertSnakeToCamel');
 
-const getApplicants29OB = async (client) => {
+const getApplicants29OB = async (client, lastIndex) => {
   const rows = await client.query(
     `
-   SELECT * FROM OB_29 WHERE id > 17
+   SELECT * FROM OB_29 WHERE id > ${lastIndex}
    `,
   );
   return convertSnakeToCamel.keysToCamel(rows);

@@ -71,6 +71,24 @@ const generateQuestionAnswerPair = (question, answer) => {
 };
 
 const generateQuestionAnswerPairsLegacy = (commonQuestions, partQuestions, applicant) => {
+  const commonBlock = [
+    {
+      type: 'heading_2',
+      heading_2: {
+        text: [
+          {
+            type: 'text',
+            text: {
+              content: '공통 질문',
+            },
+            annotations: {
+              bold: true,
+            },
+          },
+        ],
+      },
+    },
+  ];
   const commonQuestionsBlocks = commonQuestions
     .map((cq, index) => {
       return [
@@ -109,6 +127,25 @@ const generateQuestionAnswerPairsLegacy = (commonQuestions, partQuestions, appli
     })
     .flat();
 
+  const partBlock = [
+    {
+      type: 'heading_2',
+      heading_2: {
+        text: [
+          {
+            type: 'text',
+            text: {
+              content: `파트 별 질문: ${applicant.part}`,
+            },
+            annotations: {
+              bold: true,
+            },
+          },
+        ],
+      },
+    },
+  ];
+
   const partQuestionsBlocks = partQuestions
     .map((pq, index) => {
       return [
@@ -146,7 +183,7 @@ const generateQuestionAnswerPairsLegacy = (commonQuestions, partQuestions, appli
       ];
     })
     .flat();
-  return [...commonQuestionsBlocks, ...partQuestionsBlocks];
+  return [...commonBlock, ...commonQuestionsBlocks, ...partBlock, ...partQuestionsBlocks];
 };
 
 const createPage = async (commonQuestions, partQuestions, applicant) => {
@@ -233,6 +270,13 @@ const createPageLegacy = async (commonQuestions, partQuestions, applicant) => {
         },
         전화번호: {
           phone_number: applicant.phone,
+        },
+        '최근 기수': {
+          number: applicant.period,
+        },
+        '앱잼 참여 여부': {
+          type: 'checkbox',
+          checkbox: Boolean(applicant.willappjam),
         },
       },
       children: generateQuestionAnswerPairsLegacy(commonQuestions, partQuestions, applicant),

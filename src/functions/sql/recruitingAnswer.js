@@ -13,7 +13,7 @@ const getRecruitingAnswers = async (client) => {
 const addRecruitingAnswer = async (client, recruitingApplicantId, recruitingQuestionId, answer) => {
   const rows = await client.query(
     `
-  INSERT INTO recruiting_applicant
+  INSERT INTO recruiting_answer
   (recruiting_applicant_id, recruiting_question_id, answer)
   VALUES
   (?, ?, ?)

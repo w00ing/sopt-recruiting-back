@@ -30,6 +30,7 @@ const addRecruitingApplicant = async (
   season,
   univYear,
   willAppjam,
+  nearestStation,
 ) => {
   const existingRows = await client.query(
     `
@@ -45,12 +46,12 @@ const addRecruitingApplicant = async (
   const rows = await client.query(
     `
   INSERT INTO recruiting_applicant
-  (address, birthday, college, email, gender, \`group\`, known_path, leave_absence, major, most_recent_season, \`name\`, part, phone, pic, season, univ_year, will_appjam)
+  (address, birthday, college, email, gender, \`group\`, known_path, leave_absence, major, most_recent_season, \`name\`, part, phone, pic, season, univ_year, will_appjam, nearest_station)
   VALUES
-  (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   RETURNING *
   `,
-    [address, birthday, college, email, gender, group, knownPath, leaveAbsence, major, mostRecentSeason, name, part, phone, pic, season, univYear, willAppjam],
+    [address, birthday, college, email, gender, group, knownPath, leaveAbsence, major, mostRecentSeason, name, part, phone, pic, season, univYear, willAppjam, nearestStation],
   );
   return convertSnakeToCamel.keysToCamel(rows[0]);
 };

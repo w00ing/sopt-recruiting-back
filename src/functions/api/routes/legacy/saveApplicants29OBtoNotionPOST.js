@@ -12,7 +12,7 @@ const notionHandlers = require('../../../lib/notionHandlers');
 const { recruitingQuestionSQL, legacySQL } = require('../../../sql');
 
 module.exports = async (req, res) => {
-  const { season, group } = req.query;
+  const { lastIndex } = req.body;
 
   const parts = ['android', 'design', 'iOS', 'plan', 'server', 'web'];
 
@@ -21,7 +21,9 @@ module.exports = async (req, res) => {
   try {
     client = await db.connect(req);
 
-    const applicants = await legacySQL.getApplicants29OB(client);
+    // const notionDb = await notionHandlers.setDatabase('OB 지원 서류');
+
+    const applicants = await legacySQL.getApplicants29OB(client, lastIndex);
 
     let partAnswers = [];
 

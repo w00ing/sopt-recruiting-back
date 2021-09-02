@@ -7,69 +7,23 @@ const numeral = require('numeral');
 const db = require('../../../sql/db');
 const slackAPI = require('../../../middlewares/slackAPI');
 const arrayHandlers = require('../../../lib/arrayHandlers');
-const { recruitingApplicantSQL, recruitingAnswerSQL } = require('../../../sql');
+
+const { recruitingQuestionSQL } = require('../../../sql');
 
 module.exports = async (req, res) => {
-  const {
-    address,
-    birthday,
-    college,
-    email,
-    gender,
-    group,
-    knownPath,
-    leaveAbsence,
-    major,
-    mostRecentSeason,
-    name,
-    part,
-    phone,
-    pic,
-    season,
-    univYear,
-    willAppjam,
-    nearestStation,
-    recruitingApplicantId,
-    recruitingQuestionId,
-    answer,
-  } = req.body;
+  const { recruitingQuestionId, question, charLimit } = req.body;
+  if (!recruitingQuestionId) return res.status(404).json({ err: true, message: '필요한 값이 없습니다.' });
 
   let client;
 
   try {
     client = await db.connect(req);
 
-    const applicant = await recruitingApplicantSQL.addRecruitingApplicant(
-      client,
-      recruitingApplicantId,
-      address,
-      birthday,
-      college,
-      email,
-      gender,
-      group,
-      knownPath,
-      leaveAbsence,
-      major,
-      mostRecentSeason,
-      name,
-      part,
-      phone,
-      pic,
-      season,
-      univYear,
-      willAppjam,
-      nearestStation,
-    );
-
-    const newAnswer = await recruitingAnswerSQL.addRecruitingAnswer(client, applicant.id, recruitingQuestionId, answer);
-
-    // throw new Error();
+    const updatedQuestion = await recruitingQuestionSQL.updateRecruitingQuestionById(client, recruitingQuestionId, question, charLimit);
 
     res.status(200).json({
       err: false,
-      applicant,
-      newAnswer,
+      question: updatedQuestion,
     });
   } catch (error) {
     console.log(error);
