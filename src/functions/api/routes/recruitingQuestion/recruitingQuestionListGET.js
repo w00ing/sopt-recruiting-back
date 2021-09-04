@@ -24,32 +24,39 @@ module.exports = async (req, res) => {
 
     const commonQuestions = {
       part: '공통',
+      recruitingQuestionTypeId: _.find(questionTypes, (o) => o.type === 'common').id,
       questions: questions.filter((o) => o.recruitingQuestionType === 'common'),
     };
 
     const partQuestions = [
       {
         part: '기획',
+        recruitingQuestionTypeId: _.find(questionTypes, (o) => o.type === 'plan').id,
         questions: questions.filter((o) => o.recruitingQuestionType === 'plan'),
       },
       {
         part: '디자인',
+        recruitingQuestionTypeId: _.find(questionTypes, (o) => o.type === 'design').id,
         questions: questions.filter((o) => o.recruitingQuestionType === 'design'),
       },
       {
         part: '서버',
+        recruitingQuestionTypeId: _.find(questionTypes, (o) => o.type === 'server').id,
         questions: questions.filter((o) => o.recruitingQuestionType === 'server'),
       },
       {
         part: '안드로이드',
+        recruitingQuestionTypeId: _.find(questionTypes, (o) => o.type === 'android').id,
         questions: questions.filter((o) => o.recruitingQuestionType === 'android'),
       },
       {
         part: 'iOS',
+        recruitingQuestionTypeId: _.find(questionTypes, (o) => o.type === 'ios').id,
         questions: questions.filter((o) => o.recruitingQuestionType === 'ios'),
       },
       {
         part: '웹',
+        recruitingQuestionTypeId: _.find(questionTypes, (o) => o.type === 'web').id,
         questions: questions.filter((o) => o.recruitingQuestionType === 'web'),
       },
     ];
@@ -58,7 +65,7 @@ module.exports = async (req, res) => {
       err: false,
       commonQuestions,
       partQuestions,
-      questionTypes,
+      questionTypes: questionTypes.filter((o) => o.type !== 'common'),
     });
   } catch (error) {
     console.log(error);
@@ -67,7 +74,7 @@ module.exports = async (req, res) => {
 
     const slackMessage = `[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl} ${req.user ? `uname:${req.user.firstName} email:${req.user.email} uid:${req.user.id}` : 'req.user 없음'} 
  ${JSON.stringify(serializeError(error))}`;
-    slackAPI.sendMessageToSlack(slackMessage, slackAPI.WEB_HOOK_RECRUITING_MONITORING);
+    slackAPI.sendMessageToSlack(slackMessage, slackAPI.WEB_HOOK_ERROR_MONITORING);
   } finally {
     client.release();
   }

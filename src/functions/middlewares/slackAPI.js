@@ -7,10 +7,11 @@ dotenv.config();
 
 const devMode = process.env.NODE_ENV === 'development';
 
+const WEB_HOOK_ERROR_MONITORING = process.env.WEB_HOOK_ERROR_MONITORING;
 const WEB_HOOK_RECRUITING_MONITORING = process.env.WEB_HOOK_RECRUITING_MONITORING;
 
-const sendMessageToSlack = (message, apiEndPoint = WEB_HOOK_RECRUITING_MONITORING) => {
-  if (devMode) return;
+const sendMessageToSlack = (message, apiEndPoint = WEB_HOOK_ERROR_MONITORING) => {
+  // if (devMode) return;
 
   try {
     axios
@@ -26,5 +27,6 @@ const sendMessageToSlack = (message, apiEndPoint = WEB_HOOK_RECRUITING_MONITORIN
 };
 module.exports = {
   sendMessageToSlack,
+  WEB_HOOK_ERROR_MONITORING,
   WEB_HOOK_RECRUITING_MONITORING,
 };

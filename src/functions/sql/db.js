@@ -29,7 +29,7 @@ const connect = (req) => {
     functions.logger.error('[ERROR] release not called in a minute', {
       callStack,
     });
-    slackAPI.sendMessageToSlack(`[ERROR] release not called in 30 sec\n${string}\n${JSON.stringify(callStack)}`, slackAPI.WEB_HOOK_RECRUITING_MONITORING);
+    slackAPI.sendMessageToSlack(`[ERROR] release not called in 30 sec\n${string}\n${JSON.stringify(callStack)}`, slackAPI.WEB_HOOK_ERROR_MONITORING);
   }, 15 * 1000);
 
   return pool.getConnection().then((client) => {
@@ -41,7 +41,7 @@ const connect = (req) => {
         if (time > 4000) {
           const message = `[RELEASE] in ${time} | ${string}`;
           devMode && console.log(message);
-          slackAPI.sendMessageToSlack(message, slackAPI.WEB_HOOK_RECRUITING_MONITORING);
+          slackAPI.sendMessageToSlack(message, slackAPI.WEB_HOOK_ERROR_MONITORING);
         }
       })(client.release);
     return client;

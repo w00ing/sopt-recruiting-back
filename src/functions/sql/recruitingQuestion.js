@@ -10,6 +10,19 @@ const getRecruitingQuestions = async (client) => {
   return convertSnakeToCamel.keysToCamel(rows);
 };
 
+const getRecruitingQuestionsByIds = async (client, recruitingQuestionIds) => {
+  if (recruitingQuestionIds.length < 1) return [];
+  const rows = await client.query(
+    `
+    SELECT * FROM recruiting_question
+    WHERE id IN (${recruitingQuestionIds.join()})
+    ORDER BY \`order\`
+    `,
+  );
+
+  return convertSnakeToCamel.keysToCamel(rows);
+};
+
 const getRecruitingQuestionTypes = async (client) => {
   const rows = await client.query(
     `
@@ -93,6 +106,7 @@ const deleteRecruitingQuestionById = async (client, recruitingQuestionId) => {
 
 module.exports = {
   getRecruitingQuestions,
+  getRecruitingQuestionsByIds,
   getRecruitingQuestionTypes,
   getRecruitingQuestionsBySeasonAndGroup,
   addRecruitingQuestion,

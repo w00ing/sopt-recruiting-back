@@ -63,13 +63,13 @@ module.exports = async (req, res) => {
           firebaseToken,
           accesstoken,
         });
-        slackAPI.sendMessageToSlack(`[NEW USER] [EMAIL] email:${email}, uid:${user.id}`, slackAPI.WEB_HOOK_RECRUITING_MONITORING);
+        slackAPI.sendMessageToSlack(`[NEW USER] [EMAIL] email:${email}, uid:${user.id}`, slackAPI.WEB_HOOK_ERROR_MONITORING);
       } catch (error) {
         await client.query('ROLLBACK');
         functions.logger.error(`[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl}`, `[CONTENT] ${error}`);
         console.log(error);
         res.status(500).json({ err: error, userMessage: error.message || 'An error occurred during signup process.' });
-        slackAPI.sendMessageToSlack(`[ERROR: EMAIL SIGNUP] email:${email}`, slackAPI.WEB_HOOK_RECRUITING_MONITORING);
+        slackAPI.sendMessageToSlack(`[ERROR: EMAIL SIGNUP] email:${email}`, slackAPI.WEB_HOOK_ERROR_MONITORING);
       }
     }
   } catch (error) {
@@ -79,7 +79,7 @@ module.exports = async (req, res) => {
 
     const slackMessage = `[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl} ${req.user ? `email:${req.user.email} uid:${req.user.id}` : 'req.user 없음'}
  ${JSON.stringify(serializeError(error))}`;
-    slackAPI.sendMessageToSlack(slackMessage, slackAPI.WEB_HOOK_RECRUITING_MONITORING);
+    slackAPI.sendMessageToSlack(slackMessage, slackAPI.WEB_HOOK_ERROR_MONITORING);
   } finally {
     client.release();
   }
