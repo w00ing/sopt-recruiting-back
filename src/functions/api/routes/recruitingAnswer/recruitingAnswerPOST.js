@@ -18,7 +18,7 @@ module.exports = async (req, res) => {
   try {
     client = await db.connect(req);
 
-    const existingApplicant = await recruitingApplicantSQL.getRecruitingApplicantByNameAndPhone(client, name, phone);
+    const existingApplicant = await recruitingApplicantSQL.getRecruitingApplicantBySeasonGroupNameAndPhone(client, season, group, name, phone);
     if (existingApplicant) return res.status(409).json({ err: true, userMessage: '이미 지원하셨습니다.' });
 
     const applicant = await recruitingApplicantSQL.addRecruitingApplicant(

@@ -11,34 +11,20 @@ const arrayHandlers = require('../../../lib/arrayHandlers');
 const { recruitingApplicantSQL, recruitingAnswerSQL, recruitingQuestionSQL } = require('../../../sql');
 
 module.exports = async (req, res) => {
-  const { recruitingApplicantId } = req.query;
-  if (!recruitingApplicantId) return res.status(404).json({ err: true, userMessage: 'Not enough parameters.' });
+  const { season, group, name, phone } = req.query;
+  if (!name || !phone || !season || !group) return res.status(404).json({ err: true, userMessage: 'Not enough parameters.' });
 
   let client;
 
   try {
     client = await db.connect(req);
 
-    const applicant = await recruitingApplicantSQL.getRecruitingApplicantById(client, recruitingApplicantId);
-    if (!applicant) return res.status(404).json({ err: true, userMessage: '지원자가 없습니다.' });
-
-    const answers = await recruitingAnswerSQL.getRecruitingAnswersByRecruitingApplicantId(client, applicant.id);
-
-    const recruitingQuestionIds = arrayHandlers.extractValues(answers, 'recruitingQuestionId');
-
-    const questions = await recruitingQuestionSQL.getRecruitingQuestionsByIds(client, recruitingQuestionIds);
-
-    for (let i = 0; i < questions.length; i++) {
-      questions[i].answer = _.find(answers, (o) => o.recruitingQuestionId === questions[i].id);
-    }
-
-    const [commonQuestions, partQuestions] = _.partition(questions, (o) => o.recruitingQuestionTypeId === 1);
+    const applicant = await recruitingApplicantSQL.getRecruitingApplicantBySeasonGroupNameAndPhone(client, season, group, name, phone);
+    if (!applicant) return res.status(404).json({ err: true, userMessage: '지원자 정보가 없습니다.' });
 
     res.status(200).json({
       err: false,
       applicant,
-      commonQuestions,
-      partQuestions,
     });
   } catch (error) {
     console.log(error);
