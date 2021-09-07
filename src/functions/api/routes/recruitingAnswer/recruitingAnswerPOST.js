@@ -7,7 +7,7 @@ const numeral = require('numeral');
 const db = require('../../../sql/db');
 const slackAPI = require('../../../middlewares/slackAPI');
 const arrayHandlers = require('../../../lib/arrayHandlers');
-const { recruitingApplicantSQL, recruitingAnswerSQL } = require('../../../sql');
+const { recruitingApplicantSQL, recruitingAnswerSQL, recruitingAnswerDontReadSQL, recruitingAdminRoleSQL } = require('../../../sql');
 
 module.exports = async (req, res) => {
   const { address, birthday, college, email, gender, group, knownPath, leaveAbsence, major, mostRecentSeason, name, part, phone, pic, season, univYear, willAppjam, nearestStation, answers } =
@@ -47,17 +47,19 @@ module.exports = async (req, res) => {
 
     const newAnswers = await recruitingAnswerSQL.addRecruitingAnswers(client, answersWithApplicantId);
 
-    // throw new Error();
-
     res.status(200).json({
       err: false,
       applicant,
       newAnswers,
     });
 
-    const { count } = await recruitingApplicantSQL.getApplicantCountBySeasonAndGroup(client, season, group);
+    const counts = await recruitingApplicantSQL.getApplicantCountBySeasonAndGroupGroupedByPart(client, season, group);
+    console.log(counts);
+    const totalCount = counts.reduce((a, c) => a + (c.count || 0), 0);
 
-    const slackMessageNewApplicant = `[서류 하나 추가요~] \n이름: ${applicant.name} \n파트: ${applicant.part} \n번호: ${applicant.phone} \n이메일: ${applicant.email}\n${season}기 누적${group} 지원자수: ${count}`;
+    const slackMessageNewApplicant = `[#${totalCount}] [🔥이모~ 여기 서류 한 잔 추가요~🍺🍺🍺] \n이름: ${applicant.name} \n파트: ${applicant.part} \n번호: ${applicant.phone} \n이메일: ${
+      applicant.email
+    }\n\n-----------\n\n[${season}기 누적${group} 지원자수]\n전체: ${totalCount}\n--\n${counts.map((c) => `${c.part}: ${c.count}`).join('\n')}`;
     slackAPI.sendMessageToSlack(slackMessageNewApplicant, slackAPI.WEB_HOOK_RECRUITING_MONITORING);
   } catch (error) {
     console.log(error);

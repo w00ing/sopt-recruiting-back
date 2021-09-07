@@ -25,6 +25,20 @@ const getRecruitingAnswersByRecruitingApplicantId = async (client, recruitingApp
   return convertSnakeToCamel.keysToCamel(rows);
 };
 
+const getRecruitingAnswersByRecruitingApplicantIds = async (client, recruitingApplicantIds) => {
+  if (recruitingApplicantIds.length < 1) return [];
+  const rows = await client.query(
+    `
+    SELECT * FROM recruiting_answer
+    WHERE recruiting_applicant_id IN (${recruitingApplicantIds.join()})
+    AND is_deleted = FALSE
+    AND is_for_test = FALSE
+    `,
+  );
+
+  return convertSnakeToCamel.keysToCamel(rows);
+};
+
 const addRecruitingAnswer = async (client, recruitingApplicantId, recruitingQuestionId, answer) => {
   const rows = await client.query(
     `
@@ -70,4 +84,5 @@ module.exports = {
   addRecruitingAnswers,
   getRecruitingAnswersByRecruitingQuestionIds,
   getRecruitingAnswersByRecruitingApplicantId,
+  getRecruitingAnswersByRecruitingApplicantIds,
 };

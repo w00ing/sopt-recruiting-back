@@ -42,7 +42,7 @@ const getRecruitingApplicantsBySeasonAndGroup = async (client, season, group) =>
   return convertSnakeToCamel.keysToCamel(rows);
 };
 
-const getRecruitingApplicantsBySeasonAndGroupWithOffsetLimitAndNameSearchKeyword = async (client, season, group, offset = 0, limit = 20, nameSearchKeyword) => {
+const getRecruitingApplicantsBySeasonAndGroupWithOffsetLimitAndNameSearchKeywordAndPart = async (client, season, group, offset = 0, limit = 20, nameSearchKeyword, part = null) => {
   const rows = await client.query(
     `
     SELECT * FROM recruiting_applicant
@@ -50,6 +50,7 @@ const getRecruitingApplicantsBySeasonAndGroupWithOffsetLimitAndNameSearchKeyword
     AND \`group\` = ?
     AND is_deleted = FALSE
     AND is_for_test = FALSE
+    ${part ? `AND part = '${part}'` : ``}
     ${nameSearchKeyword ? `AND name LIKE '%${nameSearchKeyword}%'` : ``}
     LIMIT ${limit} OFFSET ${offset} 
     `,
@@ -143,13 +144,29 @@ const getApplicantCountBySeasonAndGroup = async (client, season, group) => {
   return convertSnakeToCamel.keysToCamel(rows[0]);
 };
 
+const getApplicantCountBySeasonAndGroupGroupedByPart = async (client, season, group) => {
+  const rows = await client.query(
+    `
+  SELECT part, COUNT(id) count FROM recruiting_applicant
+  WHERE season = ?
+  AND \`group\` = ?
+  AND is_deleted = FALSE
+  AND is_for_test = FALSE
+  GROUP BY part
+  `,
+    [season, group],
+  );
+  return convertSnakeToCamel.keysToCamel(rows);
+};
+
 module.exports = {
   getRecruitingApplicants,
   addRecruitingApplicant,
   getApplicantCount,
   getApplicantCountBySeasonAndGroup,
+  getApplicantCountBySeasonAndGroupGroupedByPart,
   getRecruitingApplicantById,
   getRecruitingApplicantBySeasonGroupNameAndPhone,
   getRecruitingApplicantsBySeasonAndGroup,
-  getRecruitingApplicantsBySeasonAndGroupWithOffsetLimitAndNameSearchKeyword,
+  getRecruitingApplicantsBySeasonAndGroupWithOffsetLimitAndNameSearchKeywordAndPart,
 };

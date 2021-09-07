@@ -2,7 +2,7 @@ const _ = require('lodash');
 const convertSnakeToCamel = require('../lib/convertSnakeToCamel');
 
 const addUserWithIdFirebase = async (client, email, idFirebase) => {
-  const { rows } = await client.query(
+  const rows = await client.query(
     `
     INSERT INTO "user"
     (email, id_firebase)

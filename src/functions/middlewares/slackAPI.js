@@ -11,7 +11,7 @@ const WEB_HOOK_ERROR_MONITORING = process.env.WEB_HOOK_ERROR_MONITORING;
 const WEB_HOOK_RECRUITING_MONITORING = process.env.WEB_HOOK_RECRUITING_MONITORING;
 
 const sendMessageToSlack = (message, apiEndPoint = WEB_HOOK_ERROR_MONITORING) => {
-  // if (devMode) return;
+  if (devMode) return;
 
   try {
     axios

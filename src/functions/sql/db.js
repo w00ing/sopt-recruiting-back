@@ -13,6 +13,7 @@ const pool = mariadb.createPool({
   database: process.env.DB_NAME,
   connectTimeout: 60 * 1000,
   idleTimeout: 60,
+  connectionLimit: 200,
 });
 
 const connect = (req) => {
@@ -41,7 +42,7 @@ const connect = (req) => {
         if (time > 4000) {
           const message = `[RELEASE] in ${time} | ${string}`;
           devMode && console.log(message);
-          slackAPI.sendMessageToSlack(message, slackAPI.WEB_HOOK_ERROR_MONITORING);
+          // slackAPI.sendMessageToSlack(message, slackAPI.WEB_HOOK_ERROR_MONITORING);
         }
       })(client.release);
     return client;
